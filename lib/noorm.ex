@@ -17,14 +17,14 @@ defmodule NoOrm do
     end
   end
   defmacro all_by_key(module,key,val) do
-  	IO.puts "out of quote #{__MODULE__}"
+  	#IO.puts "out of quote #{__MODULE__}"
     quote do
-    	IO.puts "in quote #{__MODULE__}"
+    	#IO.puts "in quote #{__MODULE__}"
       name = __MODULE__
       key = unquote(key)
       val = unquote(val)
-      IO.puts "create record: #{inspect __MODULE__[_: :_] }"
-      IO.puts "update record: #{inspect __MODULE__[_: :_].update([{key,val}])}"
+      #IO.puts "create record: #{inspect __MODULE__[_: :_] }"
+      #IO.puts "update record: #{inspect __MODULE__[_: :_].update([{key,val}])}"
       match = __MODULE__[_: :_].update([{key,val}])
       Amnesia.transaction do
      		case Amnesia.Table.match(name,match) do
@@ -47,10 +47,18 @@ defmodule NoOrm do
       case all_by_key(module,key,val) do
       	[] -> 
       		IO.puts "Need to create a new thing here"
-      		record = apply(module,:new,[attributes])
-      		IO.puts "New record: #{inspect record}"
-      		Amnesia.transaction do
+      		record = Amnesia.transaction do
+            last = apply(module,:last,[])
+            id_ = 1
+            if (is_record(last)) do
+              id_ = last.id + 1
+            end
+            IO.puts "Setting id to: #{id_} was #{attributes[:id]}"
+            attributes = ListDict.put(attributes,:id,id_)
+            record = apply(module,:new,[attributes])
+            IO.puts "New record: #{inspect record}"
       			record.write	
+            record
       		end
       		record
       	[record] -> 
