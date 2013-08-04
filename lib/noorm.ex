@@ -14,6 +14,16 @@ defmodule NoOrm do
       def aou(key,attributes) do
      		add_or_update(__MODULE__,key,attributes) 
       end
+      def all do
+        keys = Amnesia.transaction do
+          __MODULE__.keys
+        end
+        Enum.map(keys,fn(k) -> 
+          Amnesia.transaction do
+            __MODULE__.read(k)
+          end 
+        end) 
+      end
     end
   end
   defmacro all_by_key(module,key,val) do

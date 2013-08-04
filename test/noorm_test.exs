@@ -66,9 +66,10 @@ defmodule NoormTest do
    	res = Tst.Rec.all_by_key(:foo, "DOH") 
    	IO.puts "DOH records: #{inspect res}"
    	assert(Enum.count(res) == 2)
-   
-     
-    
+  
+    ### test all 
+    all = Tst.Rec.all 
+    assert(5 == Enum.count(all)) 
     Tst.destroy
     Amnesia.stop
     Amnesia.Schema.destroy
