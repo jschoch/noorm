@@ -40,7 +40,7 @@ defmodule NoOrm do
      		case Amnesia.Table.match(name,match) do
           nil -> []
           res -> 
-          	IO.puts "WOOT: #{inspect res.values}"
+          	#IO.puts "WOOT: #{inspect res.values}"
           	res.values
         end
       end 
