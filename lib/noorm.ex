@@ -76,9 +76,11 @@ defmodule NoOrm do
       		end
       	[record] -> 
       		IO.puts "need to update this #{inspect record}"
-      		record = record.update(attributes)
+      		id = record.id
       		IO.puts "updated record: #{inspect record}"
       		Amnesia.transaction do
+            record = __MODULE__.read(id)
+            record = record.update(attributes)
       			record.write
       		end
       		record
