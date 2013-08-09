@@ -28,6 +28,7 @@ defmodule NoOrm do
   end
   defmacro all_by_key(module,key,val) do
   	#IO.puts "out of quote #{__MODULE__}"
+
     quote do
     	#IO.puts "in quote #{__MODULE__}"
       name = __MODULE__
@@ -54,14 +55,17 @@ defmodule NoOrm do
     	attributes = unquote(attributes) 
     	val = attributes[key]
     	IO.puts " add_or_update module: #{module} key: #{key} val: #{val} \n\tAttributes: #{inspect attributes}"
-      case all_by_key(module,key,val) do
+      record = nil
+      record = case all_by_key(module,key,val) do
       	[] -> 
       		IO.puts "Need to create a new thing here"
-      		record = Amnesia.transaction do
+      		Amnesia.transaction do
             last = apply(module,:last,[])
+            IO.puts "last was: #{inspect last}"
             id_ = 1
             if (is_record(last)) do
               id_ = last.id + 1
+              IO.puts "Update ID to: #{id_}"
             end
             IO.puts "Setting id to: #{id_} was #{attributes[:id]} for key: #{key} with val: #{val}"
             attributes = ListDict.put(attributes,:id,id_)
@@ -70,7 +74,6 @@ defmodule NoOrm do
       			record.write	
             record
       		end
-      		record
       	[record] -> 
       		IO.puts "need to update this #{inspect record}"
       		record = record.update(attributes)
@@ -81,8 +84,11 @@ defmodule NoOrm do
       		record
       	list -> 
       		IO.puts "Warning: multiple records, you should ensure key is unique\n#{inspect list}"
+          throw("DISASTER")
       		:error
       end
+      IO.puts "RECORD was: #{inspect record}"
+      record
     end
   end
 end
