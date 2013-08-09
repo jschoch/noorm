@@ -63,7 +63,7 @@ defmodule NoOrm do
             if (is_record(last)) do
               id_ = last.id + 1
             end
-            IO.puts "Setting id to: #{id_} was #{attributes[:id]}"
+            IO.puts "Setting id to: #{id_} was #{attributes[:id]} for key: #{key} with val: #{val}"
             attributes = ListDict.put(attributes,:id,id_)
             record = apply(module,:new,[attributes])
             IO.puts "New record: #{inspect record}"
