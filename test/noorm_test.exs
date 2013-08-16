@@ -37,22 +37,22 @@ defmodule NoormTest do
    
    	### first by key
    	rec = Tst.Rec[id: 2,foo: :baz].write!
-    res = Tst.Rec.first_by_key(:id,2)
+    res = Tst.Rec.first_by_key(:foo,:baz)
     assert(res == Tst.Rec[id: 2, foo: :baz])
    	 
     
     ### test add new
-    res = Tst.Rec.aou(:foo, [foo: "DOH"])
-    assert(res == Tst.Rec[id: 3, foo: "DOH"])
+    res = Tst.Rec.aou(:foo, [foo: "DOH",id: 22])
+    assert(res == Tst.Rec[id: 22, foo: "DOH"])
     
     ### test update
-  	res = Tst.Rec.aou(:foo, [foo: "DOH",id: 22])  
-  	assert(res == Tst.Rec[id: 22,foo: "DOH"])  
+  	res = Tst.Rec.aou(:foo, [foo: "DOH",id: 23])  
+  	assert(res == Tst.Rec[id: 23,foo: "DOH"])  
 
     ### test auto_increment works 
     
     res = Tst.Rec.aou(:foo, [foo: "Hoo"])
-    assert(res == Tst.Rec[id: 23,foo: "Hoo"])
+    assert(res == Tst.Rec[id: nil,foo: "Hoo"])
   	
   	### test how it handles bad attributes
   	###### no key

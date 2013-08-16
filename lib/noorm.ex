@@ -60,36 +60,26 @@ defmodule NoOrm do
       	[] -> 
       		IO.puts "Need to create a new thing here"
       		Amnesia.transaction do
-            last = apply(module,:last,[])
-            IO.puts "last was: #{inspect last}"
-            id_ = 1
-            if (is_record(last)) do
-              id_ = last.id + 1
-              IO.puts "Update ID to: #{id_}"
-            end
-            IO.puts "Setting id to: #{id_} was #{attributes[:id]} for key: #{key} with val: #{val}"
-            attributes = ListDict.put(attributes,:id,id_)
             record = apply(module,:new,[attributes])
-            IO.puts "New record: #{inspect record}"
+            #IO.puts "New record: #{inspect record}"
       			record.write	
-            record
+      			record
       		end
       	[record] -> 
       		IO.puts "need to update this #{inspect record}"
-      		id = record.id
-      		IO.puts "updated record: #{inspect record}"
       		Amnesia.transaction do
-            record = __MODULE__.read(id)
+      			#IO.puts "attributes to update: #{inspect attributes}"
             record = record.update(attributes)
       			record.write
+      			#IO.puts "updated record #{inspect record}"
+      			record
       		end
-      		record
       	list -> 
       		IO.puts "Warning: multiple records, you should ensure key is unique\n#{inspect list}"
-          throw("DISASTER")
+          #throw("DISASTER #{inspect list}")
       		:error
       end
-      IO.puts "RECORD was: #{inspect record}"
+      #IO.puts "RECORD was: #{inspect record}"
       record
     end
   end
