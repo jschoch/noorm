@@ -55,32 +55,27 @@ defmodule NoOrm do
     	attributes = unquote(attributes) 
     	val = attributes[key]
     	IO.puts " add_or_update module: #{module} key: #{key} val: #{val} \n\tAttributes: #{inspect attributes}"
-      record = nil
-      record = case all_by_key(module,key,val) do
+      	new_record = case all_by_key(module,key,val) do
       	[] -> 
-      		IO.puts "Need to create a new thing here"
       		Amnesia.transaction do
-            record = apply(module,:new,[attributes])
-            #IO.puts "New record: #{inspect record}"
-      			record.write	
-      			record
+            	new_record = apply(module,:new,[attributes])
+            	IO.puts "NOORM Created New record: #{inspect new_record}"
+      			new_record.write	
+      			new_record
       		end
       	[record] -> 
-      		IO.puts "need to update this #{inspect record}"
       		Amnesia.transaction do
-      			#IO.puts "attributes to update: #{inspect attributes}"
-            record = record.update(attributes)
-      			record.write
-      			#IO.puts "updated record #{inspect record}"
-      			record
+            	new_record = record.update(attributes)
+      			new_record.write
+      			IO.puts "NOORM updated \n\trecord #{inspect record}\n\tnew_record #{inspect new_record}"
+      			new_record
       		end
       	list -> 
-      		IO.puts "Warning: multiple records, you should ensure key is unique\n#{inspect list}"
-          #throw("DISASTER #{inspect list}")
+      		IO.puts "NOORM Warning: multiple records, you should ensure key is unique\n#{inspect list}"
+          	#throw("DISASTER #{inspect list}")
       		:error
       end
-      #IO.puts "RECORD was: #{inspect record}"
-      record
+      new_record
     end
   end
 end
